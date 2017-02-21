@@ -61,7 +61,7 @@ namespace CryptLinkTests {
         }
 
         [Test()]
-        public void UtilityignAndVerify() {
+        public void UtilitySignAndVerify() {
             var cert1 = new X509Certificate2Builder() {
                 SubjectName = "CN=Test CA",
                 KeyStrength = 2048
