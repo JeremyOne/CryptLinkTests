@@ -30,7 +30,6 @@ namespace CryptLinkTests {
             var cert3 = new X509Certificate2Builder { SubjectName = "CN=Test 3", Issuer = cert2 }.Build();
             Assert.True(Utility.VerifyCert(cert3, false, X509RevocationMode.NoCheck, ca1, intermediate1, intermediate2, cert2), "Cert 3 is valid with: CA1.intermediate1.intermediate2.Cert2");
 
-
             var ca2 = new X509Certificate2Builder { SubjectName = "CN=Test CA2" }.Build();
             Assert.True(Utility.VerifyCert(ca2, true, X509RevocationMode.NoCheck, null), "CA2 is valid (AllowUnknownCertificateAuthority = true)");
 
