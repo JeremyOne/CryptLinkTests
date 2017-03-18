@@ -25,12 +25,12 @@ namespace CryptLinkTests {
             hashDictionary.Add(Hash.HashProvider.SHA512, "xu6eM89cZxWh0Uj9c/cxiIS0Gty5FgIeK8DoAKXF3Zf1FCF49q6IyP3Zjhr7DOTI0sVLXzezC32hmXuzOwuKMQ==");
 
             foreach (Hash.HashProvider provider in Enum.GetValues(typeof(Hash.HashProvider))) {
-                var h = new HashableString("Test");
+                var h = new HashableString("Test") { Provider = provider };
 
                 Assert.True(hashDictionary.ContainsKey(provider), "The stored test hash dictionary has a comparison Hash");
 
                 var storedTestHash = hashDictionary[provider];
-                var computedHashString = h.GetHash(provider).ToString();
+                var computedHashString = h.Hash.ToString();
 
                 Assert.AreEqual(computedHashString, storedTestHash, "Computed and stored hash differ, the hash of 'Test' should never change");
             }
