@@ -9,7 +9,7 @@ namespace CryptLinkTests {
 
         [Test]
         public void ConsistantHashProviders() {
-            var testSize = 5000;
+            var testSize = 50000;
 
             foreach (Hash.HashProvider provider in Enum.GetValues(typeof(Hash.HashProvider))) {
 

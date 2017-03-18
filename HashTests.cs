@@ -12,8 +12,8 @@ namespace CryptLinkTests {
         public void HashSeralizeDeseralize() {
             foreach (Hash.HashProvider provider in Enum.GetValues(typeof(Hash.HashProvider))) {
                 var h1 = Hash.Compute("TEST", provider);
-                var h1FromBytes = Hash.FromComputedBytes(h1.Bytes, provider);
-                var h1FromB64 = Hash.FromB64(Base64.EncodeBytes(h1.Bytes), provider);
+                var h1FromBytes = Hash.FromComputedBytes(h1.Bytes, provider, h1.SourceByteLength);
+                var h1FromB64 = Hash.FromB64(Base64.EncodeBytes(h1.Bytes), provider, h1.SourceByteLength);
 
                 Assert.AreEqual(h1.Bytes, h1FromBytes.Bytes, "Compared Bitwise");
                 Assert.True(h1 == h1FromBytes, "Compared with equality");
@@ -30,12 +30,12 @@ namespace CryptLinkTests {
                 
                 var tooLong = h1.Bytes.Concat(BitConverter.GetBytes(true)).ToArray();
                 Assert.Throws<ArgumentException>(delegate {
-                    var h1TooLong = Hash.FromComputedBytes(tooLong, provider);
+                    var h1TooLong = Hash.FromComputedBytes(tooLong, provider, h1.SourceByteLength);
                 });
 
                 var tooShort = h1.Bytes.Take(h1.Bytes.Length - 1).ToArray();
                 Assert.Throws<ArgumentException>(delegate {
-                    var h1TooShort = Hash.FromComputedBytes(tooShort, provider);
+                    var h1TooShort = Hash.FromComputedBytes(tooShort, provider, h1.SourceByteLength);
                 });
 
             }
@@ -86,8 +86,8 @@ namespace CryptLinkTests {
                     minBytes[i] = 0;
                 }
 
-                Hash max = Hash.FromComputedBytes(maxBytes, provider);
-                Hash min = Hash.FromComputedBytes(minBytes, provider);
+                Hash max = Hash.FromComputedBytes(maxBytes, provider, 0);
+                Hash min = Hash.FromComputedBytes(minBytes, provider, 0);
 
                 //All operators (hash to binary)
                 Assert.True(h1 == h2,
@@ -185,8 +185,8 @@ namespace CryptLinkTests {
                     minBytes[i] = 0;
                 }
 
-                Hash max = Hash.FromComputedBytes(maxBytes, provider);
-                Hash min = Hash.FromComputedBytes(minBytes, provider);
+                Hash max = Hash.FromComputedBytes(maxBytes, provider, 0);
+                Hash min = Hash.FromComputedBytes(minBytes, provider, 0);
 
                 //All operators (hash to binary)
                 Assert.True(h1.Bytes == h2,
@@ -239,6 +239,26 @@ namespace CryptLinkTests {
 
                 hList.Sort();
 
+            }
+        }
+
+        [Test()]
+        public void HashCompareToNull() {
+            foreach (Hash.HashProvider provider in Enum.GetValues(typeof(Hash.HashProvider))) {
+                Hash hash1 = Hash.Compute("Test", provider);
+                Hash hash2 = null;
+
+                Assert.NotNull(hash1, "New hash is not null");
+                Assert.True(hash1 != (Hash)null, "New hash is not null");
+                Assert.True(hash1 != default(Hash), "New hash is not null");
+                Assert.True(hash1?.Bytes != null, "New hash is not null");
+
+                var x = (hash2 == (Hash)null);
+
+                Assert.Null(hash2, "Null hash is null");
+                //Assert.True(hash2 == (Hash)null, "Null hash is null");
+                //Assert.True(hash2 == default(Hash), "Null hash is null");
+                Assert.True(hash2?.Bytes == null, "Null hash is null");
             }
         }
 
