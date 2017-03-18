@@ -14,11 +14,12 @@ namespace CryptLinkTests {
                 var testContainer = new MessageContainer(
                     Hash.Compute("Test Sender", provider),
                     Hash.Compute("Test Receiver", provider),
-                    provider
+                    provider,
+                    BitConverter.GetBytes((int)provider)
                 );
 
                 var hashLength = Hash.GetProviderByteLength(provider);
-                byte[] firstHash = testContainer.GetHash(provider).Bytes;
+                byte[] firstHash = testContainer.Hash.Bytes;
 
                 Assert.NotNull(firstHash, "Computed hash has data");
                 Assert.AreEqual(firstHash.Length, hashLength, "Hash length for provider");
@@ -26,11 +27,6 @@ namespace CryptLinkTests {
                 int binaryLength = testContainer.ToBinary().Length;
                 int expectedNullLength = testContainer.ByteLength(false);
                 Assert.AreEqual(binaryLength, expectedNullLength, "Binary length (null payload)");
-
-                testContainer.Payload = BitConverter.GetBytes((int)provider);
-
-                byte[] secondHash = testContainer.GetHash(provider).Bytes;
-                Assert.AreNotEqual(firstHash, secondHash, "Modified payload changes hash");
 
                 byte[] binaryContainer = testContainer.ToBinary();
 
@@ -56,11 +52,17 @@ namespace CryptLinkTests {
                 Assert.AreEqual(testContainer.ReceiverHash.Bytes, deseralizedContainer.ReceiverHash.Bytes, "Deserialized container flag ReceiverHash");
                 Assert.AreEqual(testContainer.Provider, deseralizedContainer.Provider, "Deserialized container flag Provider");
                 Assert.AreEqual(testContainer.Payload, deseralizedContainer.Payload, "Deserialized container flag Payload");
-                Assert.AreEqual(testContainer.GetHash(provider).Bytes, deseralizedContainer.GetHash(provider).Bytes, "Deserialized container flag HashBytes");
-                Assert.AreEqual(testContainer.GetHash(provider).HashByteLength(false), deseralizedContainer.GetHash(provider).HashByteLength(false), "Deserialized container flag HashByteLength");
+                Assert.AreEqual(testContainer.Hash.Bytes, deseralizedContainer.GetHash(provider).Bytes, "Deserialized container flag HashBytes");
+                Assert.AreEqual(testContainer.Hash.HashByteLength(false), deseralizedContainer.Hash.HashByteLength(false), "Deserialized container flag HashByteLength");
 
                 var r = new Random();
-				testContainer.Payload = Utility.GetBytes((int)(r.NextDouble() * 1024 * 128)); //up to 128k
+                testContainer = new MessageContainer(
+                    Hash.Compute("Test Sender", provider),
+                    Hash.Compute("Test Receiver", provider),
+                    provider,
+                    Utility.GetBytes((int)(r.NextDouble() * 1024 * 128))
+                );
+
                 binaryLength = testContainer.ToBinary().Length;
                 int expectedRandomLength = testContainer.ByteLength(false);
                 Assert.AreEqual(binaryLength, expectedRandomLength, "Binary length (random payload)");
