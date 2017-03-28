@@ -32,6 +32,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LiteDB, Version=3.0.1.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\LiteDB-master\LiteDB\bin\Release\net35\LiteDB.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <HintPath>..\CryptLink\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
       <Private>True</Private>
@@ -48,11 +52,19 @@
   <ItemGroup>
     <Compile Include="Base64Tests.cs" />
     <Compile Include="ConsistantHashTests.cs" />
-    <Compile Include="DictionaryPreformanceTests.cs" />
+    <Compile Include="FileIOBasics.cs" />
     <Compile Include="HashableTests.cs" />
     <Compile Include="HashTests.cs" />
+    <Compile Include="LiteDBBasic.cs" />
     <Compile Include="MessageContainerTests.cs" />
+    <Compile Include="ObjectCacheTests.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="UtilityTests.cs" />
     <Compile Include="X509CertTests.cs" />
   </ItemGroup>
@@ -62,7 +74,12 @@
     <Content Include="Docs\Screenshot from 2017-02-08 16-44-23.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CryptLink\CryptLink.csproj">
