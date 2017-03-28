@@ -29,7 +29,7 @@ namespace CryptLinkTests {
         }
 
         [Test()]
-        public void UtilityCertCompare() {
+        public void UtilityCalculatePadLength() {
             Assert.AreEqual(Utility.CalculatePadLength(0, 1024), 1024, "Minimum length returned");
 
             Assert.AreEqual(Utility.CalculatePadLength(1024, 0), 1024, "1024 returns 1024");
@@ -46,9 +46,15 @@ namespace CryptLinkTests {
             Assert.NotNull(ex);
         }
 
+		[Test()]
+		public void UtilityGetCert() {
+			var testCert = Utility.GetCertFromUrl(new Uri(Properties.Settings.Default.CertTestUrl));
+			Assert.NotNull(testCert);
+		}
+
         [Test()]
         public void UtilityVerifyCert() {
-            var testCert = Utility.GetCertFromUrl(new Uri("https://google.com"));
+            var testCert = Utility.GetCertFromUrl(new Uri(Properties.Settings.Default.CertTestUrl));
             Assert.True(Utility.VerifyCert(testCert, false, X509RevocationMode.Online, null));
 
             var selfSignedCert = new X509Certificate2Builder() {
