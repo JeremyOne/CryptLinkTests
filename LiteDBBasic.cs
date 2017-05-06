@@ -38,7 +38,10 @@ namespace CryptLinkTests {
 
             db.Dispose();
 
-            System.IO.File.Delete(dbPath);
+            //wait for a bit so the file system can catch up
+            System.Threading.Thread.Sleep(1000);
+
+            CryptLink.Utility.WaitDeleteFile(dbPath, new TimeSpan(0, 0, 30));
         }
 
         [Test]
@@ -49,12 +52,12 @@ namespace CryptLinkTests {
             var db = new LiteDatabase(dbPath);
             var col = db.GetCollection<CryptLink.HashableString>("Test");
 
-            var insertItem = new CryptLink.HashableString("Test1");
+            var insertItem = new CryptLink.HashableString("Test1", CryptLink.Hash.HashProvider.MD5);
 
             col.Insert(insertItem);
-            col.Insert(new CryptLink.HashableString("Test2"));
-            col.Insert(new CryptLink.HashableString("Test3"));
-            col.Insert(new CryptLink.HashableString("Test4"));
+            col.Insert(new CryptLink.HashableString("Test2", CryptLink.Hash.HashProvider.MD5));
+            col.Insert(new CryptLink.HashableString("Test3", CryptLink.Hash.HashProvider.MD5));
+            col.Insert(new CryptLink.HashableString("Test4", CryptLink.Hash.HashProvider.MD5));
 
             db.Dispose();
 
@@ -71,6 +74,9 @@ namespace CryptLinkTests {
             Assert.NotNull(foundItem);
             Assert.AreEqual(foundItem.Hash, insertItem.Hash);
 
+            //wait for a bit so the file system can catch up
+            System.Threading.Thread.Sleep(1000);
+
             db.Dispose();
 
             System.IO.File.Delete(dbPath);
@@ -85,7 +91,7 @@ namespace CryptLinkTests {
             var col = db.GetCollection<CryptLink.CacheItem>("Test");
 
             for (int i = 0; i < 1000; i++) {
-                var insertHashable = new CryptLink.HashableString(i.ToString());
+                var insertHashable = new CryptLink.HashableString(i.ToString(), CryptLink.Hash.HashProvider.MD5);
                 var insertItem = new CryptLink.CacheItem(insertHashable.Hash, insertHashable, new TimeSpan(0));
                 col.Insert(insertItem);
 
