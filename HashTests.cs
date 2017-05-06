@@ -244,11 +244,15 @@ namespace CryptLinkTests {
 
         [Test()]
         public void HashCompareToNull() {
+            //Checking nulls with custom comparer can be tricky, here are all the ways I am aware of checking it
+
             foreach (Hash.HashProvider provider in Enum.GetValues(typeof(Hash.HashProvider))) {
                 Hash hash1 = Hash.Compute("Test", provider);
                 Hash hash2 = null;
 
                 Assert.NotNull(hash1, "New hash is not null");
+                Assert.True(hash2 == null, "New hash is not null using ==");
+                Assert.False(ReferenceEquals(hash1, null), "New hash is not null using ReferenceEquals()");
                 Assert.True(hash1 != (Hash)null, "New hash is not null");
                 Assert.True(hash1 != default(Hash), "New hash is not null");
                 Assert.True(hash1?.Bytes != null, "New hash is not null");
@@ -256,9 +260,11 @@ namespace CryptLinkTests {
                 var x = (hash2 == (Hash)null);
 
                 Assert.Null(hash2, "Null hash is null");
-                //Assert.True(hash2 == (Hash)null, "Null hash is null");
-                //Assert.True(hash2 == default(Hash), "Null hash is null");
-                Assert.True(hash2?.Bytes == null, "Null hash is null");
+                Assert.True(hash2 == null, "Null hash is null using ==");
+                Assert.True(ReferenceEquals(hash2, null), "Null hash is null using ReferenceEquals()");
+				Assert.True(hash2 == (Hash)null, "Null hash is null using (Hash)null");
+				Assert.True(hash2 == default(Hash), "Null hash is null using default(Hash)");
+                Assert.True(hash2?.Bytes == null, "Null hash is null using Hash?.Bytes");
             }
         }
 
