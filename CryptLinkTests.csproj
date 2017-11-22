@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -21,7 +21,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,13 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LiteDB, Version=3.0.1.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\LiteDB-master\LiteDB\bin\Release\net35\LiteDB.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <HintPath>..\CryptLink\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.1.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
+      <HintPath>..\CryptLink\packages\BouncyCastle.1.8.1\lib\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -48,16 +42,43 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
+      <HintPath>..\CryptLink\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\CryptLink\packages\NLog.4.4.5\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="LiteDB">
+      <HintPath>..\CryptLink\packages\LiteDB.3.1.0\lib\net35\LiteDB.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+      <HintPath>..\CryptLink\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack, Version=4.5.8.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\CryptLink\packages\ServiceStack.4.5.8\lib\net45\ServiceStack.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Client, Version=4.5.8.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\CryptLink\packages\ServiceStack.Client.4.5.8\lib\net45\ServiceStack.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Common, Version=4.5.8.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\CryptLink\packages\ServiceStack.Common.4.5.8\lib\net45\ServiceStack.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Interfaces, Version=4.0.0.0, Culture=neutral, PublicKeyToken=e06fbc6124f57c43">
+      <HintPath>..\CryptLink\packages\ServiceStack.Interfaces.4.5.8\lib\portable-wp80+sl5+net45+win8+wpa81+monotouch+monoandroid+xamarin.ios10\ServiceStack.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Text, Version=4.5.8.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\CryptLink\packages\ServiceStack.Text.4.5.8\lib\net45\ServiceStack.Text.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Base64Tests.cs" />
-    <Compile Include="ConsistantHashTests.cs" />
-    <Compile Include="FileIOBasics.cs" />
-    <Compile Include="HashableTests.cs" />
-    <Compile Include="HashTests.cs" />
-    <Compile Include="LiteDBBasic.cs" />
-    <Compile Include="MessageContainerTests.cs" />
-    <Compile Include="ObjectCacheTests.cs" />
+    <Compile Include="Integration\ConfigTests.cs" />
+    <Compile Include="Integration\ServiceStackAppHostTests.cs" />
+    <Compile Include="Integration\ServiceStackUnknownTest.cs" />
+    <Compile Include="Unit\HashTests.cs" />
+    <Compile Include="Integration\ServiceInjectionsTests.cs" />
+    <Compile Include="Integration\LiteDBBasic.cs" />
+    <Compile Include="Unit\MessageContainerTests.cs" />
+    <Compile Include="Unit\ObjectCacheTests.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -65,8 +86,15 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="UtilityTests.cs" />
-    <Compile Include="X509CertTests.cs" />
+    <Compile Include="Unit\UtilityTests.cs" />
+    <Compile Include="Unit\X509CertTests.cs" />
+    <Compile Include="Integration\ServerBasicTests.cs" />
+    <Compile Include="Unit\LoggerBasicTests.cs" />
+    <Compile Include="Unit\Base64Tests.cs" />
+    <Compile Include="Integration\FileIOBasics.cs" />
+    <Compile Include="Integration\ConsistantHashTests.cs" />
+    <Compile Include="Unit\HashableTests.cs" />
+    <Compile Include="Unit\FunqIoc.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Docs\nunit2-vs2015-autoinstall.png" />
@@ -74,7 +102,9 @@
     <Content Include="Docs\Screenshot from 2017-02-08 16-44-23.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -83,7 +113,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CryptLink\CryptLink.csproj">
-      <Project>{0cae6ecf-6ace-493c-aaf2-bc20e0ca1e8b}</Project>
+      <Project>{0CAE6ECF-6ACE-493C-AAF2-BC20E0CA1E8B}</Project>
       <Name>CryptLink</Name>
     </ProjectReference>
   </ItemGroup>
@@ -98,4 +128,5 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup />
 </Project>

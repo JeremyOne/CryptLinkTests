@@ -5,5 +5,11 @@
     <Setting Name="CertTestUrl" Type="System.String" Scope="User">
       <Value Profile="(Default)">https://google.com</Value>
     </Setting>
+    <Setting Name="ServiceTestServiceName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">version?format=json</Value>
+    </Setting>
+    <Setting Name="ServiceTestUrl" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://127.0.0.1:45612/</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

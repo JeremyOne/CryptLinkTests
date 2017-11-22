@@ -82,7 +82,7 @@ namespace CryptLinkTests {
             System.IO.File.Delete(dbPath);
         }
 
-        [Test]
+        [Test, Category("Expensive")]
         public void LiteDbCacheItemIO() {
             var dbPath = CryptLink.Utility.GetTempFilePath("db");
 

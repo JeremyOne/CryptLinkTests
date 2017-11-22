@@ -257,8 +257,6 @@ namespace CryptLinkTests {
                 Assert.True(hash1 != default(Hash), "New hash is not null");
                 Assert.True(hash1?.Bytes != null, "New hash is not null");
 
-                var x = (hash2 == (Hash)null);
-
                 Assert.Null(hash2, "Null hash is null");
                 Assert.True(hash2 == null, "Null hash is null using ==");
                 Assert.True(ReferenceEquals(hash2, null), "Null hash is null using ReferenceEquals()");

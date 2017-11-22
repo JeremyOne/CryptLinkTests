@@ -11,7 +11,7 @@ namespace CryptLinkTests {
         public void HashableIsHashable() {
             Assert.False(Hashable.IsHashable(this), "A HashableTest should not derive from the Hashable type");
             Assert.False(Hashable.IsHashable(new Hash()), "A Hash should not derive from the Hashable type");
-            Assert.True(Hashable.IsHashable(new HashableString("Test")), "A HashableString should derive from the Hashable type");
+            Assert.True(Hashable.IsHashable(new HashableString("Test", Hash.HashProvider.MD5)), "A HashableString should derive from the Hashable type");
         }
 
         [Test]
@@ -25,7 +25,7 @@ namespace CryptLinkTests {
             hashDictionary.Add(Hash.HashProvider.SHA512, "xu6eM89cZxWh0Uj9c/cxiIS0Gty5FgIeK8DoAKXF3Zf1FCF49q6IyP3Zjhr7DOTI0sVLXzezC32hmXuzOwuKMQ==");
 
             foreach (Hash.HashProvider provider in Enum.GetValues(typeof(Hash.HashProvider))) {
-                var h = new HashableString("Test") { Provider = provider };
+                var h = new HashableString("Test", provider);
 
                 Assert.True(hashDictionary.ContainsKey(provider), "The stored test hash dictionary has a comparison Hash");
 

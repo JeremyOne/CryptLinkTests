@@ -54,5 +54,14 @@ namespace CryptLinkTests {
             Assert.False(Utility.VerifyCert(invalidCert4, false, X509RevocationMode.NoCheck, ca2), "Cert 4 is NOT valid with future date");
 
         }
+
+        [Test]
+        public void X509RemovePrivateKey() {
+            var ca1 = new X509Certificate2Builder { SubjectName = "CN=Test CA1", KeyStrength = 1024 }.Build();
+            var ca1Copy = Utility.GetPublicKey(ca1);
+
+            Assert.True(ca1.HasPrivateKey);
+            Assert.False(ca1Copy.HasPrivateKey);
+        }
     }
 }

@@ -11,7 +11,7 @@ namespace CryptLinkTests {
     [TestFixture()]
     public class ObjectCacheTests {
 
-        [Test()]
+        [Test(), Category("Expensive")]
         public void DictionaryCacheBenchmark() {
             
             DictionaryCache d = new DictionaryCache() {
@@ -24,10 +24,10 @@ namespace CryptLinkTests {
                 MaxObjectSize = 1024 * 1024
             };
             
-            BenchmarkCache(new TimeSpan(0, 0, 30), new TimeSpan(0, 0, 30), d, 50, 50, 50);
+            BenchmarkCache(new TimeSpan(0, 0, 15), new TimeSpan(0, 0, 30), d, 50, 50, 50);
         }
 
-        [Test()]
+        [Test, Category("Expensive")]
         public void LightDBCacheBenchmark() {
 
             string dbPath = Utility.GetTempFilePath(".db");
@@ -43,7 +43,7 @@ namespace CryptLinkTests {
                 MaxObjectSize = 1024 * 1024
             };
 
-            BenchmarkCache(new TimeSpan(0, 1, 0), new TimeSpan(0, 1, 0), d, 50, 50, 50);
+            BenchmarkCache(new TimeSpan(0, 0, 15), new TimeSpan(0, 1, 0), d, 50, 50, 50);
 
             System.IO.File.Delete(dbPath);
         }
@@ -63,14 +63,14 @@ namespace CryptLinkTests {
             DateTime start = DateTime.Now;
             DateTime testEnd = DateTime.Now.Add(TestLength);
 
-            var firstItem = new HashableString("first " + Utility.GetRandomString(20));
+            var firstItem = new HashableString("first " + Utility.GetRandomString(20), Hash.HashProvider.MD5);
             Cache.AddOrUpdate(firstItem.Hash, firstItem, new TimeSpan(99, 0, 0));
 
             Assert.True(Cache.Exists(firstItem.Hash), "Cache contains the last item inserted");
 
             long totalAdds = 0;
 
-            var lastItem = new HashableString("test");
+            var lastItem = new HashableString("test", Hash.HashProvider.MD5);
 
             while(DateTime.Now < testEnd) {
 
@@ -79,7 +79,7 @@ namespace CryptLinkTests {
                 }
 
                 totalAdds += 1;
-                lastItem = new HashableString(totalAdds.ToString());
+                lastItem = new HashableString(totalAdds.ToString(), Hash.HashProvider.MD5);
                 Cache.AddOrUpdate<HashableString>(lastItem.Hash, lastItem, CacheItemLife);
 
                 if (totalAdds % LookupSkip == 0) {
@@ -105,10 +105,11 @@ namespace CryptLinkTests {
 
             Assert.Pass($"Added {totalAdds.ToString("N0")}, ended with: {Cache.CurrentCollectionCount.ToString("N0")}, IOPS: {Cache.TotalAverageIOPS().ToString("N1")}");
 
+            Cache.Clear();
             Cache.Dispose();
         }
 
-        [Test()]
+        [Test(), Category("Expensive")]
         public void DictionaryCacheRollover() {
             int addCount = 1000000;
 
@@ -136,17 +137,17 @@ namespace CryptLinkTests {
             RolloverTest(mainCache, secondaryCache, addCount);
         }
 
-        [Test()]
+        [Test(), Category("Expensive")]
         public void DictionaryToLiteDBCacheRollover() {
-            int addCount = 100000;
+            int addCount = 10000;
             string dbPath = Utility.GetTempFilePath(".db");
 
             LiteDbCache secondaryCache = new LiteDbCache() {
                 ConnectionString = dbPath,
                 AcceptingObjects = true,
                 ManageEvery = new TimeSpan(0, 0, 15),
-                ManageEveryIOCount = 50000,
-                MaxCollectionCount = 1000000,
+                ManageEveryIOCount = 5000,
+                MaxCollectionCount = 100000,
                 MaxCollectionSize = 1024 * 1024 * 1024,
                 MaxExpiration = new TimeSpan(0, 99, 0),
                 MaxObjectSize = 1024 * 1024
@@ -173,17 +174,17 @@ namespace CryptLinkTests {
             SecondaryCache.Initialize();
             MainCache.Initialize();
 
-            var firstItem = new HashableString("first " + Utility.GetRandomString(20));
+            var firstItem = new HashableString("first " + Utility.GetRandomString(20), Hash.HashProvider.MD5);
             MainCache.AddOrUpdate(firstItem.Hash, firstItem, new TimeSpan(99, 0, 0));
 
             long totalAdds = 0;
 
-            var lastItem = new HashableString("test");
+            var lastItem = new HashableString("test", Hash.HashProvider.MD5);
             DateTime start = DateTime.Now;
 
             for (int i = 0; i < AddCount; i++) {
                 totalAdds += 1;
-                lastItem = new HashableString(i.ToString());
+                lastItem = new HashableString(i.ToString(), Hash.HashProvider.MD5);
                 MainCache.AddOrUpdate<HashableString>(lastItem.Hash, lastItem, new TimeSpan(1, 0, 0));
             }
 
@@ -195,6 +196,11 @@ namespace CryptLinkTests {
             double iops = ioTotal / span.TotalSeconds;
 
             Assert.Pass($"Added {totalAdds.ToString("N0")}, main cache contains: {MainCache.CurrentCollectionCount.ToString("N0")}, secondary cache contains: {SecondaryCache.CurrentCollectionCount.ToString("N0")}, IOPS: {iops.ToString("N1")}, took: {span.TotalMilliseconds.ToString("N0")}ms");
+
+            MainCache.Clear();
+            MainCache.Dispose();
+            SecondaryCache.Clear();
+            SecondaryCache.Dispose();
         }
 
     }

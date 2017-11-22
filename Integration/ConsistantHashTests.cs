@@ -7,7 +7,7 @@ namespace CryptLinkTests {
     [TestFixture]
     public class ConsistantHashTests {
 
-        [Test]
+        [Test, Category("Expensive")]
         public void ConsistantHashProviders() {
             var testSize = 50000;
 
@@ -18,7 +18,7 @@ namespace CryptLinkTests {
                 Hash lastHash = new Hash();
                 
                 for (int i = 0; i < testSize; i++) {
-                    var h = new HashableString(i.ToString());
+                    var h = new HashableString(i.ToString(), provider);
                     lastHash = consistentHashList.Add(h, false, 0);
                 }
 

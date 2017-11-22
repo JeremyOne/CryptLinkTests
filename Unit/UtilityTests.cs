@@ -53,32 +53,39 @@ namespace CryptLinkTests {
 		}
 
         [Test()]
+        public void UtilityVerifyGetRange() {
+            var min = 0;
+            var max = 100;
+            Assert.AreEqual(0.5, Utility.GetRange(min, 50, max));
+        }
+
+        [Test()]
         public void UtilityVerifyCert() {
             var testCert = Utility.GetCertFromUrl(new Uri(Properties.Settings.Default.CertTestUrl));
             Assert.True(Utility.VerifyCert(testCert, false, X509RevocationMode.Online, null));
 
             var selfSignedCert = new X509Certificate2Builder() {
                 SubjectName = "CN=Test CA",
-                KeyStrength = 2048
+                KeyStrength = 1024
             }.Build();
 
             Assert.False(Utility.VerifyCert(selfSignedCert, false, X509RevocationMode.NoCheck, null), "Self-signed cert fails with strict root enforcement");
             Assert.True(Utility.VerifyCert(selfSignedCert, true, X509RevocationMode.NoCheck, null), "Self-signed okay without root check");
         }
 
-        [Test()]
+        [Test(), Category("Expensive")]
         public void UtilitySignAndVerify() {
             var cert1 = new X509Certificate2Builder() {
                 SubjectName = "CN=Test CA",
-                KeyStrength = 2048
+                KeyStrength = 1024
             }.Build();
 
             var cert2 = new X509Certificate2Builder() {
                 SubjectName = "CN=Test CA 2",
-                KeyStrength = 2048
+                KeyStrength = 1024
             }.Build();
 
-            var testString = new HashableString("Test");
+            var testString = new HashableString("Test", Hash.HashProvider.MD5);
 
             foreach (Hash.HashProvider provider in Enum.GetValues(typeof(Hash.HashProvider))) {
                 var signedBytes = Utility.Sign(testString, provider, cert1);
